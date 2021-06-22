@@ -1,0 +1,53 @@
+@base_url = http://localhost:8080/efi-wp-outgoing/api
+@contentType = application/json
+
+### get outgoing
+GET {{base_url}}/outgoings HTTP/1.1
+
+
+###
+POST http://localhost:8080/efi-wp-outgoing/api/login HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+    "username": "admin",
+    "password": "admin"
+}
+
+
+### post ougoing
+POST {{base_url}}/outgoings HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+    "data": [
+        {
+            "branch": "Cainta",
+            "scale_id": "123",
+            "str_no": "123",
+            "date_out": "2021-06-14 12:00:00",
+            "date_estimated": "2021-06-15 12:00:00",,
+            "trucking": "trucking123",
+            "plate_no": "ABC123",
+            "delivered_to": "TIPCO",
+            "wp_grade": "LCOCC",
+            "weight": "21345",
+            "bales": "2",
+            "remarks": "test remarks"
+        },
+        {
+            "branch": "Cainta",
+            "scale_id": "321",
+            "str_no": "321",
+            "date_out": "2021-06-14 12:00:00",
+            "date_estimated": "2021-06-15 12:00:00",,
+            "trucking": "trucking123",
+            "plate_no": "ABC321",
+            "delivered_to": "TIPCO",
+            "wp_grade": "LCWL",
+            "weight": "23142",
+            "bales": "4",
+            "remarks": "test remarks"
+        }
+    ]
+}

@@ -72,3 +72,6 @@ $route['outgoing/(:num)'] = 'MainController/outgoing';
 
 
 $route['logout'] = 'MainController/logout';
+
+$route['set-cookie'] = 'MainController/setCookie';
+$route['get-cookie'] = 'MainController/getCookie';

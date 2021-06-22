@@ -104,6 +104,10 @@ class Outgoing extends CI_Model {
 		}
 	}
 
+	public function createMultiple($data) {
+		return $this->db->insert_batch($this->table, $data);
+	}
+
 	
 
 	public function delete($field, $value) {
