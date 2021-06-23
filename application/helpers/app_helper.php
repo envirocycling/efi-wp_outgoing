@@ -2,6 +2,11 @@
 
 use Firebase\JWT\JWT;
 
+/**
+ * Generate JWT Token
+ * 
+ * @return STRING
+ */
 if (!function_exists('generateToken')) {
     function generateToken($data) {
 
@@ -27,6 +32,11 @@ if (!function_exists('generateToken')) {
     }
 }
 
+/**
+ * Verify JWT Token
+ * 
+ * @return BOOLEAN
+ */
 if(!function_exists('verifyToken')) {
 
     function verifyToken($token) {
@@ -41,6 +51,25 @@ if(!function_exists('verifyToken')) {
             return FALSE;
             
         }
+    }
+
+}
+
+if(!function_exists('check_auth')) {
+
+    function check_auth() {
+
+        
+        $token = get_cookie('token');
+
+        die(var_dump($token));
+
+
+        if(!verifyToken($token)) {
+        return redirect('/api/auth/unauthorized'); 
+        }
+
+        return;        
     }
 
 }
