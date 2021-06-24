@@ -1,17 +1,15 @@
 <?php
 
-//Outgoing Model
-class Outgoing extends CI_Model {
+/**
+ * Transaction model
+ */
+class Transaction extends MY_Model {
 
     protected $table;
 
     public function __construct() {
         parent::__construct();
         $this->table = 'wp_outgoing';
-    }
-
-    public function all() {
-        return $this->db->get($this->table)->result();
     }
 
 	public function getRange($start, $end) {
@@ -28,13 +26,6 @@ class Outgoing extends CI_Model {
         return $this->db->get_where($this->table,['id' => $id])->row();
     }
 
-	public function getWhere($field, $value) {
-		return $this->db->get_where($this->table, [$field => $value])->row_array();
-	}
-
-	public function getWhereMultiple($where) {
-		return $this->db->get_where($this->table, $where)->result();
-	}
 
 	public function findOrCreate($data) {
 
@@ -72,7 +63,7 @@ class Outgoing extends CI_Model {
 
 		$branch = $data['branch'];
         $str_no = $data['str_no'];
-		$scale_id = $data['scale_id'];
+		$trans_id = $data['trans_id'];
 
 		$query = "
 			SELECT
@@ -83,7 +74,7 @@ class Outgoing extends CI_Model {
 			    (
 			        `branch` = '{$branch}'
                     AND `str_no` = '{$str_no}' 
-			        AND `scale_id` = '{$scale_id}'
+			        AND `trans_id` = '{$trans_id}'
 
 			    );
 		";
@@ -96,22 +87,13 @@ class Outgoing extends CI_Model {
 			// Update the existing data
 			$this->db->where('branch', $branch);
 			$this->db->where('str_no', $str_no);
-			$this->db->where('scale_id', $scale_id);
-			return $this->db->update($this->table, $data);
-		} else {
-			// Insert data
-			return $this->db->insert($this->table, $data);
+			$this->db->where('trans_id', $trans_id);
+			$this->db->delete($this->table);
 		}
-	}
-
-	public function createMultiple($data) {
-		return $this->db->insert_batch($this->table, $data);
-	}
-
-	
-
-	public function delete($field, $value) {
-		$this->db->delete($this->table, array($field => $value));
+		// Insert data
+		$res = $this->db->insert($this->table, $data);
+		return ($res) ? $this->db->insert_id() : FALSE; 
+		
 	}
 
 }

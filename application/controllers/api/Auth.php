@@ -13,6 +13,28 @@ class Auth extends REST_Controller {
         return $this->response(['message' => 'Unauthorized'], REST_Controller::HTTP_UNAUTHORIZED);
     }
 
+	// public function getcookie_get() {
+	// 	$token = getToken('token');
+	// 	print_r($token);
+	// }
+
+	// public function setcookie_get() {
+	// 	$data = array(
+	// 		'user_id' => 123,
+	// 		'name' => 'John Doe'
+	// 	);
+		
+	// 	$token = generateToken($data);
+
+	// 	if($token) {
+	// 		setToken($token);
+	// 		$cookie = getToken('token');
+	// 		return $this->response(['token' => $cookie], REST_Controller::HTTP_OK);
+	// 	}
+					
+	// 	return $this->response(['error' => 'Something went wrong'], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+	// }
+
 	/**
 	 * Auth endpoint
 	 * 
@@ -42,14 +64,9 @@ class Auth extends REST_Controller {
 
 					if($token) {
 
-						$exp = (3 * 24 * 60 * 60);
-						$domain = getenv('BASE_URL');
-						$path = '/';
-						$prefix = 'ci_';
+						setToken($token);
 
-						set_cookie('token', $token, $exp, null, null, null, FALSE, TRUE );
-
-						$cookie = get_cookie('token');
+						$cookie = getToken('token');
 
 						return $this->response(['token' => $cookie], REST_Controller::HTTP_OK);
 					}
@@ -105,7 +122,7 @@ class Auth extends REST_Controller {
 	}
 
 	public function logout_post() {
-		delete_cookie('ci_token');
+		removeToken('token');
 		return $this->response(['message' => 'Success'], REST_Controller::HTTP_OK);
 	}
 

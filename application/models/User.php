@@ -1,7 +1,7 @@
 <?php
 
     //User Model
-    class User extends CI_Model {
+    class User extends MY_Model {
 
         protected $table;
 
@@ -11,9 +11,6 @@
             $this->table = 'users';
         }
 
-        public function all() {
-            return $this->db->get($this->table)->result();
-        }
 
         //Add a user
         public function addUser($data) {

@@ -2,17 +2,13 @@
 
 require APPPATH . 'libraries/REST_Controller.php';
 
-class Transaction extends REST_Controller {
+class Transactions extends REST_Controller {
 
 	public function __construct() {
 		parent::__construct();
 		$this->load->helper('app_helper');
-
-        //check_auth();
+        checkAuth();
 	}
-
-
-
 
     /**
      * Outgoing end points
@@ -21,66 +17,60 @@ class Transaction extends REST_Controller {
      */
     public function outgoings_get($id = 0) {
 
-        $x = $this->input->cookie('token');
-
-        die(var_dump($x));
-
         if($this->get()) {
-
             $start_date = $this->get('start_date');
             $end_date = $this->get('end_date');
-
-            $data = $this->outgoing->getRange($start_date, $end_date);
-
+            $data = $this->transaction->getRange($start_date, $end_date);
         } else {
-
             if (!empty($id)) {
-
-                $data = $this->outgoing->getWhere('id', $id);
-
+                $data = $this->transaction->getWhere('id', $id);
                 if(!$data) {
                     return $this->response(['Not Found'], REST_Controller::HTTP_NOT_FOUND);
                 }
-
             } else {
-                $data = $this->outgoing->all();
+                $data = $this->transaction->all();
             }
-
         }
-
         return $this->response($data, REST_Controller::HTTP_OK);
-
 	}
 
 	public function outgoings_post() {
-
 		$data = $this->post();
 
-		$res = $this->outgoing->createOrUpdate($data);
+		$id = $this->transaction->createOrUpdate($data);
 
-		if ($res) {
-			$this->response(['Success'], REST_Controller::HTTP_CREATED);
+		if ($id) {
+			$this->response(['trans_id' => $id], REST_Controller::HTTP_CREATED);
 		} else {
 			$this->response(['Failed'], REST_Controller::HTTP_BAD_REQUEST);
 		}
 	}
-     /** 
-      * End Outgoing end point
-     */
 
-	public function details_get($id = 0) {
+	public function details_get($trans_id) {
 
-        $data = ['msg' => 'test data'];
+        $detail = $this->detail->getWhere('trans_id',$trans_id);
 
+        die(var_dump($detail));
+        
 		$this->response($data, REST_Controller::HTTP_OK);
-
 	}
 
 	public function details_post() {
-
 		$data = $this->post();
-
 		$this->response(['data' => $data, 'status' => 'success'], REST_Controller::HTTP_CREATED);
-	
+    }
+
+    public function createdetails_post() {
+		$data = $this->post("data");
+
+        $this->detail->delete('wp_outgoing_id', $data[0]['wp_outgoing_id']);
+        
+        $res = $this->detail->createMultiple($data);
+
+        if($res) {
+            return $this->response(['data' => ['details' => $data, 'count' => $res]], REST_Controller::HTTP_CREATED);
+        }
+		
+        return $this->response(['error' => 'Internal server error'], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
     }
 }
